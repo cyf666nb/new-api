@@ -1,6 +1,6 @@
 <div align="center">
 
-# New API
+# MIRAX-API
 
 **AI API 网关 / 多模型管理平台**
 
