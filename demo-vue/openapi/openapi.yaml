@@ -1,0 +1,606 @@
+openapi: 3.1.0
+info:
+  title: MIRAX Demo Frontend API
+  version: 0.1.0
+  description: Contract consumed by web/demo-vue. Backend language is intentionally unspecified.
+servers:
+  - url: /api/v1
+paths:
+  /providers:
+    get:
+      summary: List providers
+      responses:
+        '200':
+          description: Provider list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderListEnvelope'
+  /models/pricing:
+    get:
+      summary: List public pricing models
+      responses:
+        '200':
+          description: Pricing data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PricingEnvelope'
+  /rankings:
+    get:
+      summary: List model rankings
+      responses:
+        '200':
+          description: Ranking list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RankingListEnvelope'
+  /docs/tree:
+    get:
+      summary: Get documentation tree
+      responses:
+        '200':
+          description: Documentation navigation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocTreeEnvelope'
+  /docs/articles/{slug}:
+    get:
+      summary: Get documentation article
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+      responses:
+        '200':
+          description: Documentation article
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocArticleEnvelope'
+  /skills:
+    get:
+      summary: List skills
+      parameters:
+        - name: providerId
+          in: query
+          schema:
+            $ref: '#/components/schemas/ProviderId'
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: sourceType
+          in: query
+          schema:
+            type: string
+            enum: [official, vendor, community]
+        - name: keyword
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Skill list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillListEnvelope'
+  /skills/{slug}:
+    get:
+      summary: Get skill detail
+      parameters:
+        - $ref: '#/components/parameters/Slug'
+      responses:
+        '200':
+          description: Skill detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillEnvelope'
+  /dashboard/summary:
+    get:
+      summary: Get dashboard summary
+      responses:
+        '200':
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardEnvelope'
+  /api-keys:
+    get:
+      summary: List API keys
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Keyword'
+      responses:
+        '200':
+          description: API keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiKeyPageEnvelope'
+  /usage-logs:
+    get:
+      summary: List usage logs
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Keyword'
+      responses:
+        '200':
+          description: Usage logs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageLogPageEnvelope'
+  /wallet/summary:
+    get:
+      summary: Get wallet summary
+      responses:
+        '200':
+          description: Wallet summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletSummaryEnvelope'
+  /wallet/transactions:
+    get:
+      summary: List wallet transactions
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Wallet transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletTransactionPageEnvelope'
+  /profile:
+    get:
+      summary: Get current profile
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileEnvelope'
+  /channels:
+    get:
+      summary: List channels
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Keyword'
+      responses:
+        '200':
+          description: Channels
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelPageEnvelope'
+  /models:
+    get:
+      summary: List managed models
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Keyword'
+      responses:
+        '200':
+          description: Managed models
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedModelPageEnvelope'
+  /users:
+    get:
+      summary: List managed users
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Keyword'
+      responses:
+        '200':
+          description: Users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedUserPageEnvelope'
+  /settings:
+    get:
+      summary: List settings
+      responses:
+        '200':
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettingsEnvelope'
+components:
+  parameters:
+    Slug:
+      name: slug
+      in: path
+      required: true
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        default: 20
+    Keyword:
+      name: keyword
+      in: query
+      schema:
+        type: string
+  schemas:
+    ProviderId:
+      type: string
+      enum: [anthropic, openai, google, deepseek, xai, mistral, qwen, zhipu, doubao, moonshot]
+    ProviderProtocol:
+      type: string
+      enum: [openai-compatible, anthropic-messages, gemini-generate-content, embeddings, images]
+    ApiFailure:
+      type: object
+      required: [success, message]
+      properties:
+        success:
+          const: false
+        message:
+          type: string
+        code:
+          type: string
+        traceId:
+          type: string
+    Provider:
+      type: object
+      required: [id, name, displayName, brandColor, icon, website, docsUrl, sourceUrl, licenseNote, protocols]
+      properties:
+        id:
+          $ref: '#/components/schemas/ProviderId'
+        name:
+          type: string
+        displayName:
+          type: string
+        brandColor:
+          type: string
+        icon:
+          type: string
+        website:
+          type: string
+        docsUrl:
+          type: string
+        sourceUrl:
+          type: string
+        licenseNote:
+          type: string
+        protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderProtocol'
+    PricingModel:
+      type: object
+      required: [id, name, providerId, protocol, quotaType, inputPerMillion, outputPerMillion, contextWindow, endpoint, group, tags, capabilities, isEnabled, updatedAt]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        providerId:
+          $ref: '#/components/schemas/ProviderId'
+        protocol:
+          $ref: '#/components/schemas/ProviderProtocol'
+        quotaType:
+          type: string
+          enum: [token, request]
+        inputPerMillion: { type: number }
+        outputPerMillion: { type: number }
+        contextWindow: { type: string }
+        endpoint: { type: string }
+        group: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        capabilities:
+          type: array
+          items: { type: string }
+        benchmark: { type: string }
+        isEnabled: { type: boolean }
+        updatedAt: { type: string, format: date-time }
+    PageResult:
+      type: object
+      required: [items, total, page, pageSize]
+      properties:
+        items:
+          type: array
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+    Skill:
+      type: object
+      required: [id, slug, name, providerId, sourceUrl, sourceType, trustLevel, summary, description, categories, tags, targets, version, updatedAt, installInstructions, docsSlug]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        name: { type: string }
+        providerId:
+          $ref: '#/components/schemas/ProviderId'
+        sourceUrl: { type: string }
+        sourceType:
+          type: string
+          enum: [official, vendor, community]
+        trustLevel:
+          type: string
+          enum: [official, verified, curated]
+        summary: { type: string }
+        description: { type: string }
+        categories:
+          type: array
+          items: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        targets:
+          type: array
+          items: { type: string }
+        version: { type: string }
+        updatedAt: { type: string, format: date-time }
+        installInstructions: { type: string }
+        docsSlug: { type: string }
+    DocArticleMeta:
+      type: object
+      required: [slug, title, section, order, updatedAt]
+      properties:
+        slug: { type: string }
+        title: { type: string }
+        section: { type: string }
+        order: { type: integer }
+        providerId:
+          $ref: '#/components/schemas/ProviderId'
+        updatedAt: { type: string, format: date-time }
+    DocArticle:
+      allOf:
+        - $ref: '#/components/schemas/DocArticleMeta'
+        - type: object
+          required: [body]
+          properties:
+            body: { type: string }
+    DocTreeSection:
+      type: object
+      required: [id, title, items]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocArticleMeta'
+    DashboardSummary:
+      type: object
+      additionalProperties: true
+    ApiKey:
+      type: object
+      additionalProperties: true
+    UsageLog:
+      type: object
+      additionalProperties: true
+    WalletSummary:
+      type: object
+      additionalProperties: true
+    WalletTransaction:
+      type: object
+      additionalProperties: true
+    Profile:
+      type: object
+      additionalProperties: true
+    Channel:
+      type: object
+      additionalProperties: true
+    ManagedModel:
+      type: object
+      additionalProperties: true
+    ManagedUser:
+      type: object
+      additionalProperties: true
+    SystemSetting:
+      type: object
+      additionalProperties: true
+    ProviderListEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Provider'
+        - $ref: '#/components/schemas/ApiFailure'
+    PricingEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              type: object
+              required: [models, groups, endpoints]
+              properties:
+                models:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PricingModel'
+                groups:
+                  type: array
+                  items:
+                    type: object
+                endpoints:
+                  type: array
+                  items:
+                    type: object
+        - $ref: '#/components/schemas/ApiFailure'
+    RankingListEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+        - $ref: '#/components/schemas/ApiFailure'
+    DocTreeEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/DocTreeSection'
+        - $ref: '#/components/schemas/ApiFailure'
+    DocArticleEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/DocArticle'
+        - $ref: '#/components/schemas/ApiFailure'
+    SkillListEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Skill'
+        - $ref: '#/components/schemas/ApiFailure'
+    SkillEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/Skill'
+        - $ref: '#/components/schemas/ApiFailure'
+    DashboardEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/DashboardSummary'
+        - $ref: '#/components/schemas/ApiFailure'
+    ApiKeyPageEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              allOf:
+                - $ref: '#/components/schemas/PageResult'
+                - type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ApiKey'
+        - $ref: '#/components/schemas/ApiFailure'
+    UsageLogPageEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/PageResult'
+        - $ref: '#/components/schemas/ApiFailure'
+    WalletSummaryEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/WalletSummary'
+        - $ref: '#/components/schemas/ApiFailure'
+    WalletTransactionPageEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/PageResult'
+        - $ref: '#/components/schemas/ApiFailure'
+    ProfileEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/Profile'
+        - $ref: '#/components/schemas/ApiFailure'
+    ChannelPageEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/PageResult'
+        - $ref: '#/components/schemas/ApiFailure'
+    ManagedModelPageEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/PageResult'
+        - $ref: '#/components/schemas/ApiFailure'
+    ManagedUserPageEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              $ref: '#/components/schemas/PageResult'
+        - $ref: '#/components/schemas/ApiFailure'
+    SettingsEnvelope:
+      oneOf:
+        - type: object
+          required: [success, data]
+          properties:
+            success: { const: true }
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/SystemSetting'
+        - $ref: '#/components/schemas/ApiFailure'

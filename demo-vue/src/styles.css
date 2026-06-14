@@ -1,0 +1,60 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-serif: 'Noto Serif SC', 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  --color-sky: #6bafdf;
+  --color-mint: #4db899;
+  --color-orange: #e8702a;
+  --color-beige: #c4b89a;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  background: #fafaf9;
+}
+
+.demo-page {
+  min-height: 100vh;
+}
+
+.quick-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px 14px;
+  color: rgba(0, 0, 0, 0.62);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.quick-btn:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #1a1815;
+}
+
+.quick-btn.dark {
+  border-color: #1a1815;
+  background: #1a1815;
+  color: #fff;
+}
+
+.quick-btn.dark:hover {
+  border-color: #1a1815;
+  background: #2a2722;
+  color: #fff;
+}
